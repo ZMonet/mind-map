@@ -33,11 +33,7 @@ import { mapState, mapMutations } from 'vuex'
 import { themeMap } from '@/config/constant.js'
 import customThemeList from '@/customThemes'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:53:04
- * @Desc: 主题
- */
+//主题
 export default {
   name: 'Theme',
   components: {

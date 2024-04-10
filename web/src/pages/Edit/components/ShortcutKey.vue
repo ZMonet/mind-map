@@ -24,11 +24,7 @@ import Sidebar from './Sidebar'
 import { shortcutKeyList } from '@/config'
 import { mapState } from 'vuex'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:54:14
- * @Desc: 快捷键
- */
+//快捷键
 export default {
   name: 'ShortcutKey',
   components: {

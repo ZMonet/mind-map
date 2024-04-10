@@ -115,11 +115,7 @@ import { storeLang, getLang } from '@/api'
 import { mapState, mapMutations } from 'vuex'
 import pkg from 'simple-mind-map/package.json'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:53:10
- * @Desc: 导航器工具栏
- */
+//导航器工具栏
 export default {
   name: 'NavigatorToolbar',
   components: {

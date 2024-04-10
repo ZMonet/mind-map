@@ -14,11 +14,7 @@
 <script>
 import { mapState } from 'vuex'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:53:10
- * @Desc: 字数及节点数量统计
- */
+//字数及节点数量统计
 
 let countEl = document.createElement('div')
 export default {
@@ -64,11 +60,7 @@ export default {
       this.words = countEl.textContent.length
     },
 
-    /**
-     * @Author: 王林
-     * @Date: 2021-06-30 22:13:07
-     * @Desc: 遍历
-     */
+    //遍历
     walk(data) {
       if (!data) return
       this.num++

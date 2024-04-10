@@ -26,11 +26,7 @@
 import { mapState, mapMutations } from 'vuex'
 import { sidebarTriggerList } from '@/config'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:54:25
- * @Desc: 侧边栏触发器
- */
+//侧边栏触发器
 export default {
   name: 'SidebarTrigger',
   data() {

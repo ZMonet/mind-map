@@ -40,11 +40,7 @@
 import ImgUpload from '@/components/ImgUpload'
 import { getImageSize, isMobile } from 'simple-mind-map/src/utils/index'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:53:45
- * @Desc: 节点图片内容设置
- */
+//节点图片内容设置
 export default {
   name: 'NodeImage',
   components: {

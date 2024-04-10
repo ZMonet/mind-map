@@ -1,8 +1,4 @@
-/**
- * @Author: 王林
- * @Date: 2021-07-11 21:38:09
- * @Desc: 全屏事件检测
- */
+//全屏事件检测
 const getOnfullscreEnevt = () => {
   if (document.documentElement.requestFullScreen) {
     return 'onfullscreenchange'
@@ -17,11 +13,7 @@ const getOnfullscreEnevt = () => {
 
 export const fullscrrenEvent = getOnfullscreEnevt()
 
-/**
- * @Author: 王林
- * @Date: 2021-07-11 21:45:06
- * @Desc: 全屏
- */
+//全屏
 export const fullScreen = element => {
   if (element.requestFullScreen) {
     element.requestFullScreen()

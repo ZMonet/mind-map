@@ -8,11 +8,7 @@ const SIMPLE_MIND_MAP_LOCAL_CONFIG = 'SIMPLE_MIND_MAP_LOCAL_CONFIG'
 
 let mindMapData = null
 
-/**
- * @Author: 王林
- * @Date: 2021-08-02 22:36:48
- * @Desc: 克隆思维导图数据，去除激活状态
- */
+//克隆思维导图数据，去除激活状态
 const copyMindMapTreeData = (tree, root) => {
   if (!root) return null
   tree.data = simpleDeepClone(root.data)
@@ -26,11 +22,7 @@ const copyMindMapTreeData = (tree, root) => {
   return tree
 }
 
-/**
- * @Author: 王林
- * @Date: 2021-08-01 10:10:49
- * @Desc: 获取缓存的思维导图数据
- */
+//获取缓存的思维导图数据
 export const getData = () => {
   if (window.takeOverApp) {
     mindMapData = window.takeOverAppMethods.getMindMapData()
@@ -48,11 +40,7 @@ export const getData = () => {
   }
 }
 
-/**
- * @Author: 王林
- * @Date: 2021-08-01 10:14:28
- * @Desc: 存储思维导图数据
- */
+//存储思维导图数据
 export const storeData = data => {
   try {
     let originData = null
@@ -75,11 +63,7 @@ export const storeData = data => {
   }
 }
 
-/**
- * @Author: 王林
- * @Date: 2021-08-01 10:24:56
- * @Desc: 存储思维导图配置数据
- */
+//存储思维导图配置数据
 export const storeConfig = config => {
   try {
     let originData = null

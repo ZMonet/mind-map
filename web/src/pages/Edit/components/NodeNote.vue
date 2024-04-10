@@ -29,11 +29,7 @@ import Editor from '@toast-ui/editor'
 import '@toast-ui/editor/dist/toastui-editor.css' // Editor's Style
 import { isMobile } from 'simple-mind-map/src/utils/index'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:53:54
- * @Desc: 节点备注内容设置
- */
+//节点备注内容设置
 export default {
   name: 'NodeNote',
   data() {
@@ -96,20 +92,12 @@ export default {
       this.editor.setMarkdown(this.note)
     },
 
-    /**
-     * @Author: 王林
-     * @Date: 2021-06-22 22:08:11
-     * @Desc: 取消
-     */
+    //取消
     cancel() {
       this.dialogVisible = false
     },
 
-    /**
-     * @Author: 王林
-     * @Date: 2021-06-06 22:28:20
-     * @Desc:  确定
-     */
+    // 确定
     confirm() {
       this.note = this.editor.getMarkdown()
       this.activeNodes.forEach(node => {

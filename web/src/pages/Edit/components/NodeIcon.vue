@@ -27,11 +27,7 @@
 import { nodeIconList } from 'simple-mind-map/src/svg/icons'
 import icon from '@/config/icon'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:53:33
- * @Desc: 节点图标内容设置
- */
+//节点图标内容设置
 export default {
   name: 'NodeIcon',
   data() {
@@ -69,11 +65,7 @@ export default {
       return /^<svg/.test(icon) ? icon : `<img src="${icon}" />`
     },
 
-    /**
-     * @Author: 王林
-     * @Date: 2021-06-23 23:16:56
-     * @Desc: 设置icon
-     */
+    //设置icon
     setIcon(type, name) {
       let key = type + '_' + name
       let index = this.iconList.findIndex(item => {
