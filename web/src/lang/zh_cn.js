@@ -98,7 +98,8 @@ export default {
     removeHyperlink: '移除超链接',
     removeNote: '移除备注',
     removeCustomStyles: '一键去除自定义样式',
-    removeAllNodeCustomStyles: '一键去除所有节点自定义样式'
+    removeAllNodeCustomStyles: '一键去除所有节点自定义样式',
+    exportNodeToPng: '导出该节点为图片'
   },
   count: {
     words: '字数',
@@ -135,6 +136,9 @@ export default {
   fullscreen: {
     fullscreenShow: '全屏查看',
     fullscreenEdit: '全屏编辑'
+  },
+  demonstrate: {
+    demonstrate: '进入演示模式'
   },
   import: {
     title: '导入',
@@ -256,6 +260,7 @@ export default {
     associativeLine: '关联线',
     painter: '格式刷',
     formula: '公式',
+    attachment: '附件',
     more: '更多',
     selectFileTip: '请选择文件',
     notSupportTip: '你的浏览器不支持该功能，或者当前页面非https协议',
@@ -277,7 +282,8 @@ export default {
     tip: '提示',
     yes: '是',
     no: '否',
-    exportError: '导出失败'
+    exportError: '导出失败',
+    dragTip: '在此释放以导入该文件'
   },
   mouseAction: {
     tip1: '当前：左键拖动画布，右键框选节点',
@@ -325,5 +331,9 @@ export default {
     formatErrorTip: 'JSON格式有误，请检查后再试',
     copyTip: '已复制到剪贴板',
     formatTip: '格式化完成'
+  },
+  attachment: {
+    deleteAttachment: '删除附件',
+    tip: '附件功能仅在客户端可用'
   }
 }

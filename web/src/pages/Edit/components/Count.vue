@@ -12,7 +12,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import {mapState} from 'vuex'
+import {defenseXSS} from 'simple-mind-map/src/utils/xss'
 
 //字数及节点数量统计
 
@@ -56,7 +57,7 @@ export default {
       this.words = 0
       this.num = 0
       this.walk(data)
-      countEl.innerHTML = this.textStr
+      countEl.innerHTML = defenseXSS(this.textStr)
       this.words = countEl.textContent.length
     },
 
@@ -93,7 +94,7 @@ export default {
     background: #262a2e;
 
     .item {
-      color: hsla(0,0%,100%,.6);
+      color: hsla(0, 0%, 100%, .6);
     }
   }
 

@@ -37,7 +37,7 @@ class View {
     this.mindMap.event.on('drag', (e, event) => {
       // 按住ctrl键拖动为多选
       // 禁用拖拽
-      if (e.ctrlKey || this.mindMap.opt.isDisableDrag) {
+      if (e.ctrlKey || e.metaKey || this.mindMap.opt.isDisableDrag) {
         return
       }
       if (this.firstDrag) {
@@ -72,7 +72,11 @@ class View {
         return customHandleMousewheel(e)
       }
       // 1.鼠标滚轮事件控制缩放
-      if (mousewheelAction === CONSTANTS.MOUSE_WHEEL_ACTION.ZOOM || e.ctrlKey) {
+      if (
+        mousewheelAction === CONSTANTS.MOUSE_WHEEL_ACTION.ZOOM ||
+        e.ctrlKey ||
+        e.metaKey
+      ) {
         if (disableMouseWheelZoom) return
         const { x: clientX, y: clientY } = this.mindMap.toPos(
           e.clientX,
@@ -158,7 +162,8 @@ class View {
         ...viewData.transform
       })
       this.mindMap.emit('view_data_change', this.getTransformData())
-      this.mindMap.emit('scale', this.scale)
+      this.emitEvent('scale')
+      this.emitEvent('translate')
     }
   }
 
@@ -168,6 +173,7 @@ class View {
     this.x += x
     this.y += y
     this.transform()
+    this.emitEvent('translate')
   }
 
   //  平移x方向
@@ -175,12 +181,14 @@ class View {
     if (step === 0) return
     this.x += step
     this.transform()
+    this.emitEvent('translate')
   }
 
   //  平移x方式到
   translateXTo(x) {
     this.x = x
     this.transform()
+    this.emitEvent('translate')
   }
 
   //  平移y方向
@@ -188,12 +196,14 @@ class View {
     if (step === 0) return
     this.y += step
     this.transform()
+    this.emitEvent('translate')
   }
 
   //  平移y方向到
   translateYTo(y) {
     this.y = y
     this.transform()
+    this.emitEvent('translate')
   }
 
   //   应用变换
@@ -211,13 +221,17 @@ class View {
 
   //  恢复
   reset() {
-    let scaleChange = this.scale !== 1
+    const scaleChange = this.scale !== 1
+    const translateChange = this.x !== 0 || this.y !== 0
     this.scale = 1
     this.x = 0
     this.y = 0
     this.transform()
     if (scaleChange) {
-      this.mindMap.emit('scale', this.scale)
+      this.emitEvent('scale')
+    }
+    if (translateChange) {
+      this.emitEvent('translate')
     }
   }
 
@@ -227,7 +241,7 @@ class View {
     const scale = Math.max(this.scale - scaleRatio, 0.1)
     this.scaleInCenter(scale, cx, cy)
     this.transform()
-    this.mindMap.emit('scale', this.scale)
+    this.emitEvent('scale')
   }
 
   //  放大
@@ -236,7 +250,7 @@ class View {
     const scale = this.scale + scaleRatio
     this.scaleInCenter(scale, cx, cy)
     this.transform()
-    this.mindMap.emit('scale', this.scale)
+    this.emitEvent('scale')
   }
 
   // 基于指定中心进行缩放，cx，cy 可不指定，此时会使用画布中心点
@@ -262,15 +276,16 @@ class View {
       this.scale = scale
     }
     this.transform()
-    this.mindMap.emit('scale', this.scale)
+    this.emitEvent('scale')
   }
 
   // 适应画布大小
-  fit() {
-    const { fitPadding } = this.mindMap.opt
+  fit(getRbox = () => {}, enlarge = false, fitPadding) {
+    fitPadding =
+      fitPadding === undefined ? this.mindMap.opt.fitPadding : fitPadding
     const draw = this.mindMap.draw
     const origTransform = draw.transform()
-    const rect = draw.rbox()
+    const rect = getRbox() || draw.rbox()
     const drawWidth = rect.width / origTransform.scaleX
     const drawHeight = rect.height / origTransform.scaleY
     const drawRatio = drawWidth / drawHeight
@@ -280,7 +295,7 @@ class View {
     const elRatio = elWidth / elHeight
     let newScale = 0
     let flag = ''
-    if (drawWidth <= elWidth && drawHeight <= elHeight) {
+    if (drawWidth <= elWidth && drawHeight <= elHeight && !enlarge) {
       newScale = 1
       flag = 1
     } else {
@@ -298,7 +313,7 @@ class View {
       newScale = newWidth / drawWidth
     }
     this.setScale(newScale)
-    const newRect = draw.rbox()
+    const newRect = getRbox() || draw.rbox()
     // 需要考虑画布容器距浏览器窗口左上角的距离
     newRect.x -= this.mindMap.elRect.left
     newRect.y -= this.mindMap.elRect.top
@@ -392,6 +407,16 @@ class View {
       right,
       top,
       bottom
+    }
+  }
+
+  // 派发事件
+  emitEvent(type) {
+    switch (type) {
+      case 'scale':
+        this.mindMap.emit('scale', this.scale)
+      case 'translate':
+        this.mindMap.emit('translate', this.x, this.y)
     }
   }
 }

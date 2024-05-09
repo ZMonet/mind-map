@@ -16,7 +16,8 @@ import {
   ForeignObject
 } from '@svgdotjs/svg.js'
 import iconsSvg from '../../../svg/icons'
-import { CONSTANTS, commonCaches } from '../../../constants/constant'
+import { CONSTANTS } from '../../../constants/constant'
+import {defenseXSS} from "../../../utils/xss";
 
 //  创建图片节点
 function createImgNode() {
@@ -148,14 +149,14 @@ function createRichTextNode() {
       text: text
     })
   }
-  let html = `<div>${this.getData('text')}</div>`
-  if (!commonCaches.measureRichtextNodeTextSizeEl) {
-    commonCaches.measureRichtextNodeTextSizeEl = document.createElement('div')
-    commonCaches.measureRichtextNodeTextSizeEl.style.position = 'fixed'
-    commonCaches.measureRichtextNodeTextSizeEl.style.left = '-999999px'
-    this.mindMap.el.appendChild(commonCaches.measureRichtextNodeTextSizeEl)
+  let html = `<div>${defenseXSS(this.getData('text'))}</div>`
+  if (!this.mindMap.commonCaches.measureRichtextNodeTextSizeEl) {
+    this.mindMap.commonCaches.measureRichtextNodeTextSizeEl = document.createElement('div')
+    this.mindMap.commonCaches.measureRichtextNodeTextSizeEl.style.position = 'fixed'
+    this.mindMap.commonCaches.measureRichtextNodeTextSizeEl.style.left = '-999999px'
+    this.mindMap.el.appendChild(this.mindMap.commonCaches.measureRichtextNodeTextSizeEl)
   }
-  let div = commonCaches.measureRichtextNodeTextSizeEl
+  let div = this.mindMap.commonCaches.measureRichtextNodeTextSizeEl
   div.innerHTML = html
   let el = div.children[0]
   el.classList.add('smm-richtext-node-wrap')
@@ -262,7 +263,7 @@ function createHyperlinkNode() {
     e.stopPropagation()
   })
   if (hyperlinkTitle) {
-    a.attr('title', hyperlinkTitle)
+    node.add(SVG(`<title>${hyperlinkTitle}</title>`))
   }
   // 添加一个透明的层，作为鼠标区域
   a.rect(iconSize, iconSize).fill({ color: 'transparent' })
@@ -368,6 +369,36 @@ function createNoteNode() {
   }
 }
 
+//  创建附件节点
+function createAttachmentNode() {
+  const { attachmentUrl, attachmentName } = this.getData()
+  if (!attachmentUrl) {
+    return
+  }
+  const iconSize = this.mindMap.themeConfig.iconSize
+  const node = new SVG().attr('cursor', 'pointer').size(iconSize, iconSize)
+  if (attachmentName) {
+    node.add(SVG(`<title>${attachmentName}</title>`))
+  }
+  // 透明的层，用来作为鼠标区域
+  node.add(new Rect().size(iconSize, iconSize).fill({ color: 'transparent' }))
+  // 备注图标
+  const iconNode = SVG(iconsSvg.attachment).size(iconSize, iconSize)
+  this.style.iconNode(iconNode)
+  node.add(iconNode)
+  node.on('click', e => {
+    this.mindMap.emit('node_attachmentClick', this, e, node)
+  })
+  node.on('contextmenu', e => {
+    this.mindMap.emit('node_attachmentContextmenu', this, e, node)
+  })
+  return {
+    node,
+    width: iconSize,
+    height: iconSize
+  }
+}
+
 // 获取节点备注显示位置
 function getNoteContentPosition() {
   const iconSize = this.mindMap.themeConfig.iconSize
@@ -383,18 +414,18 @@ function getNoteContentPosition() {
 
 // 测量自定义节点内容元素的宽高
 function measureCustomNodeContentSize(content) {
-  if (!commonCaches.measureCustomNodeContentSizeEl) {
-    commonCaches.measureCustomNodeContentSizeEl = document.createElement('div')
-    commonCaches.measureCustomNodeContentSizeEl.style.cssText = `
+  if (!this.mindMap.commonCaches.measureCustomNodeContentSizeEl) {
+    this.mindMap.commonCaches.measureCustomNodeContentSizeEl = document.createElement('div')
+    this.mindMap.commonCaches.measureCustomNodeContentSizeEl.style.cssText = `
       position: fixed;
       left: -99999px;
       top: -99999px;
     `
-    this.mindMap.el.appendChild(commonCaches.measureCustomNodeContentSizeEl)
+    this.mindMap.el.appendChild(this.mindMap.commonCaches.measureCustomNodeContentSizeEl)
   }
-  commonCaches.measureCustomNodeContentSizeEl.innerHTML = ''
-  commonCaches.measureCustomNodeContentSizeEl.appendChild(content)
-  let rect = commonCaches.measureCustomNodeContentSizeEl.getBoundingClientRect()
+  this.mindMap.commonCaches.measureCustomNodeContentSizeEl.innerHTML = ''
+  this.mindMap.commonCaches.measureCustomNodeContentSizeEl.appendChild(content)
+  let rect = this.mindMap.commonCaches.measureCustomNodeContentSizeEl.getBoundingClientRect()
   return {
     width: rect.width,
     height: rect.height
@@ -415,6 +446,7 @@ export default {
   createHyperlinkNode,
   createTagNode,
   createNoteNode,
+  createAttachmentNode,
   getNoteContentPosition,
   measureCustomNodeContentSize,
   isUseCustomNodeContent

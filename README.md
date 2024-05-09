@@ -38,6 +38,7 @@ Github：[releases](https://github.com/wanglin2/mind-map/releases)。百度云�
 - [x] 支持快捷键、前进后退、关联线、搜索替换、小地图、水印、滚动条
 - [x] 提供丰富的配置，满足各种场景各种使用习惯
 - [x] 支持协同编辑
+- [x] 支持演示模式
 
 # 安装
 
@@ -92,7 +93,7 @@ const mindMap = new MindMap({
 
 # star
 
-如果喜欢本项目，欢迎点个star，这对我们很重要。
+如果喜欢本项目，欢迎点个 star，这对我们很重要。
 
 [![Star History Chart](https://api.star-history.com/svg?repos=wanglin2/mind-map&type=Date)](https://star-history.com/#wanglin2/mind-map&Date)
 
@@ -315,5 +316,37 @@ const mindMap = new MindMap({
     <span>
         <img src="./web/src/assets/avatar/L.jpg" style="width: 50px;height: 50px;" />
         <span>L</span>
+    </span>
+    <span>
+        <img src="./web/src/assets/avatar/default.png" style="width: 50px;height: 50px;" />
+        <span>sunniberg</span>
+    </span>
+    <span>
+        <img src="./web/src/assets/avatar/在下青铜五.jpg" style="width: 50px;height: 50px;" />
+        <span>在下青铜五</span>
+    </span>
+    <span>
+        <img src="./web/src/assets/avatar/木星二号.jpg" style="width: 50px;height: 50px;" />
+        <span>木星二号</span>
+    </span>
+    <span>
+        <img src="./web/src/assets/avatar/阿晨.jpg" style="width: 50px;height: 50px;" />
+        <span>阿晨</span>
+    </span>
+    <span>
+        <img src="./web/src/assets/avatar/default.png" style="width: 50px;height: 50px;" />
+        <span>铁</span>
+    </span>
+    <span>
+        <img src="./web/src/assets/avatar/庆国.jpg" style="width: 50px;height: 50px;" />
+        <span>庆国</span>
+    </span>
+    <span>
+        <img src="./web/src/assets/avatar/孟照星.jpg" style="width: 50px;height: 50px;" />
+        <span>孟照星</span>
+    </span>
+    <span>
+        <img src="./web/src/assets/avatar/子豪.jpg" style="width: 50px;height: 50px;" />
+        <span>子豪</span>
     </span>
 </p>

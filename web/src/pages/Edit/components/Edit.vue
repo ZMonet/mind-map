@@ -1,6 +1,16 @@
 <template>
-  <div class="editContainer">
-    <div class="mindMapContainer" ref="mindMapContainer"></div>
+  <div
+    class="editContainer"
+    @dragenter.stop.prevent="onDragenter"
+    @dragleave.stop.prevent
+    @dragover.stop.prevent
+    @drop.stop.prevent
+  >
+    <div
+      class="mindMapContainer"
+      id="mindMapContainer"
+      ref="mindMapContainer"
+    ></div>
     <Count :mindMap="mindMap" v-if="!isZenMode"></Count>
     <Navigator :mindMap="mindMap"></Navigator>
     <NavigatorToolbar :mindMap="mindMap" v-if="!isZenMode"></NavigatorToolbar>
@@ -16,6 +26,7 @@
       v-if="mindMap"
       :mindMap="mindMap"
     ></NodeNoteContentShow>
+    <NodeAttachment v-if="mindMap" :mindMap="mindMap"></NodeAttachment>
     <NodeImgPreview v-if="mindMap" :mindMap="mindMap"></NodeImgPreview>
     <SidebarTrigger v-if="!isZenMode"></SidebarTrigger>
     <Search v-if="mindMap" :mindMap="mindMap"></Search>
@@ -25,6 +36,15 @@
     <Scrollbar v-if="isShowScrollbar && mindMap" :mindMap="mindMap"></Scrollbar>
     <FormulaSidebar v-if="mindMap" :mindMap="mindMap"></FormulaSidebar>
     <SourceCodeEdit v-if="mindMap" :mindMap="mindMap"></SourceCodeEdit>
+    <div
+      class="dragMask"
+      v-if="showDragMask"
+      @dragleave.stop.prevent="onDragleave"
+      @dragover.stop.prevent
+      @drop.stop.prevent="onDrop"
+    >
+      <div class="dragTip">{{ $t('edit.dragTip') }}</div>
+    </div>
   </div>
 </template>
 
@@ -47,6 +67,7 @@ import Painter from 'simple-mind-map/src/plugins/Painter.js'
 import ScrollbarPlugin from 'simple-mind-map/src/plugins/Scrollbar.js'
 import Formula from 'simple-mind-map/src/plugins/Formula.js'
 import RainbowLines from 'simple-mind-map/src/plugins/RainbowLines.js'
+import Demonstrate from 'simple-mind-map/src/plugins/Demonstrate.js'
 // 协同编辑插件
 // import Cooperate from 'simple-mind-map/src/plugins/Cooperate.js'
 // 手绘风格插件，该插件为付费插件，详情请查看开发文档
@@ -85,6 +106,7 @@ import Scrollbar from './Scrollbar.vue'
 import exampleData from 'simple-mind-map/example/exampleData'
 import FormulaSidebar from './FormulaSidebar.vue'
 import SourceCodeEdit from './SourceCodeEdit.vue'
+import NodeAttachment from './NodeAttachment.vue'
 
 // 注册插件
 MindMap.usePlugin(MiniMap)
@@ -102,6 +124,7 @@ MindMap.usePlugin(MiniMap)
   .usePlugin(Painter)
   .usePlugin(Formula)
   .usePlugin(RainbowLines)
+  .usePlugin(Demonstrate)
 // .usePlugin(Cooperate) // 协同插件
 
 // 注册自定义主题
@@ -133,7 +156,8 @@ export default {
     OutlineEdit,
     Scrollbar,
     FormulaSidebar,
-    SourceCodeEdit
+    SourceCodeEdit,
+    NodeAttachment
   },
   data() {
     return {
@@ -141,7 +165,8 @@ export default {
       mindMap: null,
       mindMapData: null,
       prevImg: '',
-      storeConfigTimer: null
+      storeConfigTimer: null,
+      showDragMask: false
     }
   },
   computed: {
@@ -471,7 +496,12 @@ export default {
         'painter_start',
         'painter_end',
         'scrollbar_change',
-        'scale'
+        'scale',
+        'translate',
+        'node_attachmentClick',
+        'node_attachmentContextmenu',
+        'demonstrate_jump',
+        'exit_demonstrate'
       ].forEach(event => {
         this.mindMap.on(event, (...args) => {
           this.$bus.$emit(event, ...args)
@@ -737,6 +767,20 @@ export default {
               : ''
         })
       }
+    },
+
+    // 拖拽文件到页面导入
+    onDragenter() {
+      this.showDragMask = true
+    },
+    onDragleave() {
+      this.showDragMask = false
+    },
+    onDrop(e) {
+      this.showDragMask = false
+      const dt = e.dataTransfer
+      const file = dt.files && dt.files[0]
+      this.$bus.$emit('importFile', file)
     }
   }
 }
@@ -749,6 +793,24 @@ export default {
   right: 0;
   top: 0;
   bottom: 0;
+
+  .dragMask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3999;
+
+    .dragTip {
+      pointer-events: none;
+      font-weight: bold;
+    }
+  }
 
   .mindMapContainer {
     position: absolute;

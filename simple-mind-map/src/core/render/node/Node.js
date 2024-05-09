@@ -75,6 +75,7 @@ class Node {
     this._noteData = null
     this.noteEl = null
     this.noteContentIsShow = false
+    this._attachmentData = null
     this._expandBtn = null
     this._lastExpandBtnType = null
     this._showExpandBtn = false
@@ -199,6 +200,7 @@ class Node {
     this._hyperlinkData = this.createHyperlinkNode()
     this._tagData = this.createTagNode()
     this._noteData = this.createNoteNode()
+    this._attachmentData = this.createAttachmentNode()
   }
 
   //  计算节点的宽高
@@ -266,6 +268,14 @@ class Node {
     if (this._noteData) {
       textContentWidth += this._noteData.width
       textContentHeight = Math.max(textContentHeight, this._noteData.height)
+    }
+    // 附件
+    if (this._attachmentData) {
+      textContentWidth += this._attachmentData.width
+      textContentHeight = Math.max(
+        textContentHeight,
+        this._attachmentData.height
+      )
     }
     // 文字内容部分的尺寸
     this._rectInfo.textContentWidth = textContentWidth
@@ -399,6 +409,14 @@ class Node {
       textContentNested.add(this._noteData.node)
       textContentOffsetX += this._noteData.width
     }
+    // 附件
+    if (this._attachmentData) {
+      this._attachmentData.node
+        .x(textContentOffsetX)
+        .y((this._rectInfo.textContentHeight - this._attachmentData.height) / 2)
+      textContentNested.add(this._attachmentData.node)
+      textContentOffsetX += this._attachmentData.width
+    }
     // 文字内容整体
     textContentNested.translate(
       width / 2 - textContentNested.bbox().width / 2,
@@ -451,7 +469,7 @@ class Node {
         }
       }
       // 多选和取消多选
-      if (e.ctrlKey && enableCtrlKeyNodeSelection) {
+      if ((e.ctrlKey || e.metaKey) && enableCtrlKeyNodeSelection) {
         this.isMultipleChoice = true
         let isActive = this.getData('isActive')
         if (!isActive)
@@ -495,7 +513,7 @@ class Node {
     // 双击事件
     this.group.on('dblclick', e => {
       const { readonly, onlyOneEnableActiveNodeOnCooperate } = this.mindMap.opt
-      if (readonly || e.ctrlKey) {
+      if (readonly || e.ctrlKey || e.metaKey) {
         return
       }
       e.stopPropagation()
@@ -547,6 +565,12 @@ class Node {
     this.renderer.emitNodeActiveEvent(this)
   }
 
+  // 取消激活该节点
+  deactivate() {
+    this.mindMap.renderer.removeNodeFromActiveList(this)
+    this.mindMap.renderer.emitNodeActiveEvent()
+  }
+
   //  更新节点
   update() {
     if (!this.group) {
@@ -554,9 +578,10 @@ class Node {
     }
     this.updateNodeActiveClass()
     let { alwaysShowExpandBtn } = this.mindMap.opt
+    const childrenLength = this.nodeData.children.length
     if (alwaysShowExpandBtn) {
       // 需要移除展开收缩按钮
-      if (this._expandBtn && this.nodeData.children.length <= 0) {
+      if (this._expandBtn && childrenLength <= 0) {
         this.removeExpandBtn()
       } else {
         // 更新展开收起按钮
@@ -565,7 +590,9 @@ class Node {
     } else {
       let { isActive, expand } = this.getData()
       // 展开状态且非激活状态，且当前鼠标不在它上面，才隐藏
-      if (expand && !isActive && !this._isMouseenter) {
+      if (childrenLength <= 0) {
+        this.removeExpandBtn()
+      } else if (expand && !isActive && !this._isMouseenter) {
         this.hideExpandBtn()
       } else {
         this.showExpandBtn()

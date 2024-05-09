@@ -98,7 +98,8 @@ export default {
     removeHyperlink: 'Remove hyperlink',
     removeNote: 'Remove note',
     removeCustomStyles: 'Remove custom styles',
-    removeAllNodeCustomStyles: 'Remove all node custom styles'
+    removeAllNodeCustomStyles: 'Remove all node custom styles',
+    exportNodeToPng: 'Export node to png'
   },
   count: {
     words: 'Words',
@@ -137,6 +138,9 @@ export default {
   fullscreen: {
     fullscreenShow: 'Full screen show',
     fullscreenEdit: 'Full screen edit'
+  },
+  demonstrate: {
+    demonstrate: 'Enter demonstration mode'
   },
   import: {
     title: 'Import',
@@ -259,6 +263,7 @@ export default {
     associativeLine: 'Associative line',
     painter: 'Painter',
     formula: 'Formula',
+    attachment: 'Attachment',
     more: 'More',
     selectFileTip: 'Please select a file',
     notSupportTip:
@@ -281,7 +286,8 @@ export default {
     tip: 'Tip',
     yes: 'Yes',
     no: 'No',
-    exportError: 'Export failed'
+    exportError: 'Export failed',
+    dragTip: 'Release here to import the file'
   },
   mouseAction: {
     tip1:
@@ -331,5 +337,9 @@ export default {
     formatErrorTip: 'The JSON format is incorrect. Please check and try again',
     copyTip: 'Copied to clipboard',
     formatTip: 'Format complete'
+  },
+  attachment: {
+    deleteAttachment: 'Delete attachment',
+    tip: 'The attachment function is only available on the client side'
   }
 }

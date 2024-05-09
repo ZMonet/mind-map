@@ -312,14 +312,10 @@ export const nodeDataNoStylePropList = [
   'associativeLineTargets',
   'associativeLineTargetControlOffsets',
   'associativeLinePoint',
-  'associativeLineText'
+  'associativeLineText',
+  'attachmentUrl',
+  'attachmentName'
 ]
-
-// 数据缓存
-export const commonCaches = {
-  measureCustomNodeContentSizeEl: null,
-  measureRichtextNodeTextSizeEl: null
-}
 
 // 错误类型
 export const ERROR_TYPES = {

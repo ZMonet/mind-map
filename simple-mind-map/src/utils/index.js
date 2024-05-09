@@ -157,8 +157,15 @@ export const copyRenderTree = (tree, root, removeActiveState = false) => {
   tree.data = simpleDeepClone(root.data)
   if (removeActiveState) {
     tree.data.isActive = false
-    if (tree.data.generalization) {
-      tree.data.generalization.isActive = false
+    const generalization = tree.data.generalization
+    if (generalization) {
+      if (Array.isArray(generalization)) {
+        generalization.forEach(item => {
+          item.isActive = false
+        })
+      } else {
+        generalization.isActive = false
+      }
     }
   }
   tree.children = []
@@ -1359,5 +1366,98 @@ export const handleGetSvgDataExtraContent = ({
     headerHeight,
     footer,
     footerHeight
+  }
+}
+
+// 获取指定节点的包围框信息
+export const getNodeTreeBoundingRect = (
+  node,
+  x = 0,
+  y = 0,
+  paddingX = 0,
+  paddingY = 0,
+  excludeSelf = false
+) => {
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
+  const walk = (root, isRoot) => {
+    if (!(isRoot && excludeSelf)) {
+      const { x, y, width, height } = root.group
+        .findOne('.smm-node-shape')
+        .rbox()
+      if (x < minX) {
+        minX = x
+      }
+      if (x + width > maxX) {
+        maxX = x + width
+      }
+      if (y < minY) {
+        minY = y
+      }
+      if (y + height > maxY) {
+        maxY = y + height
+      }
+    }
+    if (root._generalizationList.length > 0) {
+      root._generalizationList.forEach(item => {
+        walk(item.generalizationNode)
+      })
+    }
+    if (root.children) {
+      root.children.forEach(item => {
+        walk(item)
+      })
+    }
+  }
+  walk(node, true)
+
+  minX = minX - x + paddingX
+  minY = minY - y + paddingY
+  maxX = maxX - x + paddingX
+  maxY = maxY - y + paddingY
+
+  return {
+    left: minX,
+    top: minY,
+    width: maxX - minX,
+    height: maxY - minY
+  }
+}
+
+// 全屏事件检测
+const getOnfullscreEnevt = () => {
+  if (document.documentElement.requestFullScreen) {
+    return 'fullscreenchange'
+  } else if (document.documentElement.webkitRequestFullScreen) {
+    return 'webkitfullscreenchange'
+  } else if (document.documentElement.mozRequestFullScreen) {
+    return 'mozfullscreenchange'
+  } else if (document.documentElement.msRequestFullscreen) {
+    return 'msfullscreenchange'
+  }
+}
+export const fullscrrenEvent = getOnfullscreEnevt()
+
+// 全屏
+export const fullScreen = element => {
+  if (element.requestFullScreen) {
+    element.requestFullScreen()
+  } else if (element.webkitRequestFullScreen) {
+    element.webkitRequestFullScreen()
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen()
+  }
+}
+
+// 退出全屏
+export const exitFullScreen = () => {
+  if (document.exitFullscreen) {
+    document.exitFullscreen()
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen()
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen()
   }
 }

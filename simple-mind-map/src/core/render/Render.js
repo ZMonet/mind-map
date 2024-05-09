@@ -65,7 +65,9 @@ class Render {
     this.mindMap = opt.mindMap
     this.themeConfig = this.mindMap.themeConfig
     // 渲染树，操作过程中修改的都是这里的数据
-    this.renderTree = this.mindMap.opt.data ? merge({}, this.mindMap.opt.data) : null
+    this.renderTree = this.mindMap.opt.data
+      ? merge({}, this.mindMap.opt.data)
+      : null
     // 是否重新渲染
     this.reRender = false
     // 是否正在渲染中
@@ -246,6 +248,9 @@ class Render {
     // 设置节点备注
     this.setNodeNote = this.setNodeNote.bind(this)
     this.mindMap.command.add('SET_NODE_NOTE', this.setNodeNote)
+    // 设置节点附件
+    this.setNodeAttachment = this.setNodeAttachment.bind(this)
+    this.mindMap.command.add('SET_NODE_ATTACHMENT', this.setNodeAttachment)
     // 设置节点标签
     this.setNodeTag = this.setNodeTag.bind(this)
     this.mindMap.command.add('SET_NODE_TAG', this.setNodeTag)
@@ -330,7 +335,7 @@ class Render {
     })
     // 一键整理布局
     this.mindMap.keyCommand.addShortcut('Control+l', () => {
-      this.mindMap.execCommand('RESET_LAYOUT', this.resetLayout)
+      this.mindMap.execCommand('RESET_LAYOUT')
     })
     // 上移节点
     this.mindMap.keyCommand.addShortcut('Control+Up', () => {
@@ -856,6 +861,9 @@ class Render {
         },
         children: [node.nodeData]
       }
+      node.setData({
+        resetRichText: true
+      })
       const parent = node.parent
       // 获取当前节点所在位置
       const index = getNodeDataIndex(node)
@@ -981,12 +989,18 @@ class Render {
         const _hasCustomStyles = this._handleRemoveCustomStyles(node.data)
         if (_hasCustomStyles) hasCustomStyles = true
         // 不要忘记概要节点
-        if (node.data.generalization && node.data.generalization.length > 0) {
-          node.data.generalization.forEach(generalizationData => {
-            const _hasCustomStyles =
-              this._handleRemoveCustomStyles(generalizationData)
-            if (_hasCustomStyles) hasCustomStyles = true
-          })
+        let generalization = node.data.generalization
+        if (generalization) {
+          generalization = Array.isArray(generalization)
+            ? generalization
+            : [generalization]
+          if (generalization.length > 0) {
+            generalization.forEach(generalizationData => {
+              const _hasCustomStyles =
+                this._handleRemoveCustomStyles(generalizationData)
+              if (_hasCustomStyles) hasCustomStyles = true
+            })
+          }
         }
       })
     }
@@ -1228,7 +1242,7 @@ class Render {
       root.nodeData.children = []
     } else {
       // 如果只选中了一个节点，删除后激活其兄弟节点或者父节点
-      needActiveNode = this.getNextActiveNode()
+      needActiveNode = this.getNextActiveNode(list)
       for (let i = 0; i < list.length; i++) {
         const node = list[i]
         const currentEditNode = this.textEdit.getCurrentEditNode()
@@ -1283,13 +1297,13 @@ class Render {
     if (this.activeNodeList.length <= 0 && appointNodes.length <= 0) {
       return
     }
-    // 删除节点后需要激活的节点，如果只选中了一个节点，删除后激活其兄弟节点或者父节点
-    let needActiveNode = this.getNextActiveNode()
     let isAppointNodes = appointNodes.length > 0
     let list = isAppointNodes ? appointNodes : this.activeNodeList
     list = list.filter(node => {
       return !node.isRoot
     })
+    // 删除节点后需要激活的节点，如果只选中了一个节点，删除后激活其兄弟节点或者父节点
+    let needActiveNode = this.getNextActiveNode(list)
     for (let i = 0; i < list.length; i++) {
       let node = list[i]
       if (node.isGeneralization) {
@@ -1315,7 +1329,11 @@ class Render {
   }
 
   // 计算下一个可激活的节点
-  getNextActiveNode() {
+  getNextActiveNode(deleteList) {
+    // 删除多个节点不自动激活相邻节点
+    if (deleteList.length !== 1) return null
+    // 被删除的节点不在当前激活的节点列表里，不激活相邻节点
+    if (this.findActiveNodeIndex(deleteList[0]) === -1) return null
     let needActiveNode = null
     if (
       this.activeNodeList.length === 1 &&
@@ -1488,7 +1506,7 @@ class Render {
   }
 
   //  收起所有
-  unexpandAllNode() {
+  unexpandAllNode(isSetRootNodeCenter = true) {
     if (!this.renderTree) return
     walk(
       this.renderTree,
@@ -1504,7 +1522,9 @@ class Render {
       0
     )
     this.mindMap.render(() => {
-      this.setRootNodeCenter()
+      if (isSetRootNodeCenter) {
+        this.setRootNodeCenter()
+      }
     })
   }
 
@@ -1597,6 +1617,14 @@ class Render {
     })
   }
 
+  //  设置节点附件
+  setNodeAttachment(node, url, name = '') {
+    this.setNodeDataRender(node, {
+      attachmentUrl: url,
+      attachmentName: name
+    })
+  }
+
   //  设置节点标签
   setNodeTag(node, tag) {
     this.setNodeDataRender(node, {
@@ -1616,7 +1644,7 @@ class Render {
   }
 
   //  添加节点概要
-  addGeneralization(data) {
+  addGeneralization(data, openEdit = true) {
     if (this.activeNodeList.length <= 0) {
       return
     }
@@ -1628,13 +1656,22 @@ class Render {
       )
     })
     const list = parseAddGeneralizationNodeList(nodeList)
+    const isRichText = !!this.mindMap.richText
+    const { focusNewNode, inserting } = this.getNewNodeBehavior(
+      openEdit,
+      list.length > 1
+    )
     list.forEach(item => {
       const newData = {
+        inserting,
         ...(data || {
           text: this.mindMap.opt.defaultGeneralizationText
         }),
         range: item.range || null,
-        uid: createUid()
+        uid: createUid(),
+        richText: isRichText,
+        resetRichText: isRichText,
+        isActive: focusNewNode
       }
       let generalization = item.node.getData('generalization')
       if (generalization) {
@@ -1654,6 +1691,10 @@ class Render {
         expand: true
       })
     })
+    // 需要清除原来激活的节点
+    if (focusNewNode) {
+      this.clearActiveNodeList()
+    }
     this.mindMap.render(() => {
       // 修复祖先节点存在概要时位置未更新的问题
       // 修复同时给存在上下级关系的节点添加概要时重叠的问题
@@ -1824,6 +1865,8 @@ class Render {
 
   // 高亮节点或子节点
   highlightNode(node, range) {
+    // 如果当前正在渲染，那么不进行高亮，因为节点位置可能不正确
+    if (this.isRendering) return
     const { highlightNodeBoxStyle = {} } = this.mindMap.opt
     if (!this.highlightBoxNode) {
       this.highlightBoxNode = new Polygon()
