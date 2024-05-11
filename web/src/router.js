@@ -10,10 +10,15 @@ const routes = [
     component: () => import(`./pages/Index/Index.vue`)
   },
   { 
-    path: '/', 
-    name: 'Edit', 
+    path: '/mindMap/edit',
+    name: 'MindMapEdit',
     component: () => import(`./pages/Edit/Index.vue`) 
   },
+  {
+    path: '/',
+    name: 'MindMapList',
+    component: () => import(`./pages/Mind/Index.vue`)
+  }
 ]
 
 const router = new VueRouter({
