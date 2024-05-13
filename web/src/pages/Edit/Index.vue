@@ -55,8 +55,6 @@ export default {
     ...mapMutations(['setLocalConfig']),
 
     /**
-     * @Author: 王林25
-     * @Date: 2022-11-14 19:07:03
      * @Desc: 初始化本地配置
      */
     initLocalConfig() {

@@ -71,7 +71,6 @@ axios.interceptors.request.use(
     // }
     //非登录请求需携带token
     if (config.url.indexOf("/login") === -1) {
-      console.log(localStorage.getItem("authorized-token"))
       config.headers.Authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxX3RydWVfemp4aWFuIiwiZXhwIjoxNzE1ODQzMDE2LCJpYXQiOjE3MTUyMzgyMTZ9.X-ZfDhZxKwv1AhTMx1r9f8XqOw1CZwQTT5NPQO-k4Xo";
     }
     return config;

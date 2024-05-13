@@ -24,8 +24,7 @@
           </el-col>
           <el-col :span="2">
             <div class="article-opr">
-              <el-button size="small" type="info" icon="el-icon-view" @click="handleView(item)" plain/>
-              <el-button size="small" type="warning" icon="el-icon-edit-outline" @click="handleEdit(item)" plain/>
+              <el-button size="small" type="warning" icon="el-icon-edit-outline" style="margin-right: 10px" @click="handleEdit(item)" plain/>
               <el-popconfirm
                   confirm-button-text="Yes"
                   cancel-button-text="No"
@@ -69,6 +68,7 @@
 
 <script>
 import {getRequest,postJsonRequest,deleteRequest} from "@/api/api";
+import {mapState} from "vuex";
 
 export default {
   name: "MindIndex",
@@ -129,12 +129,9 @@ export default {
     handleAdd() {
       this.dialogVisible = true;
     },
-    handleView(item) {
-      this.$router.push({name: 'MindMapEdit', query: {articleId: item.id, operateType: 'view'}})
-
-    },
     handleEdit(item) {
-      this.$router.push({name: 'MindMapEdit', query: {articleId: item.id, operateType: 'edit'}})
+      this.$store.commit('setArticleInfo', {articleId: item.id, title: item.title})
+      this.$router.push({name: 'MindMapEdit', query: {articleId: item.id}})
     },
     handleDelete(id) {
       deleteRequest("/article?id="+id).then(res=>{

@@ -925,8 +925,8 @@ export default {
     // ...data2,
     // ...data3,
     // ...data4,
-    ...data5,
-    // ...rootData,
+    // ...data5,
+    ...rootData,
     "theme": {
         "template": "classic4",
         "config": {

@@ -12,14 +12,20 @@
       ref="mindMapContainer"
     ></div>
     <Count :mindMap="mindMap" v-if="!isZenMode"></Count>
+    <!-- 顶部工具栏 -->
     <Navigator :mindMap="mindMap"></Navigator>
+    <!-- 底部工具栏 -->
     <NavigatorToolbar :mindMap="mindMap" v-if="!isZenMode"></NavigatorToolbar>
+
+    <!-- 侧边栏-大纲、节点样式、基础样式、主题、结构、快捷键 -->
     <OutlineSidebar :mindMap="mindMap"></OutlineSidebar>
     <Style v-if="!isZenMode"></Style>
     <BaseStyle :data="mindMapData" :mindMap="mindMap"></BaseStyle>
     <Theme v-if="mindMap" :mindMap="mindMap"></Theme>
     <Structure :mindMap="mindMap"></Structure>
     <ShortcutKey></ShortcutKey>
+
+    <!-- 鼠标右键菜单 -->
     <Contextmenu v-if="mindMap" :mindMap="mindMap"></Contextmenu>
     <RichTextToolbar v-if="mindMap" :mindMap="mindMap"></RichTextToolbar>
     <NodeNoteContentShow
@@ -90,12 +96,6 @@ import SidebarTrigger from './SidebarTrigger.vue'
 import { mapState } from 'vuex'
 import icon from '@/config/icon'
 import customThemeList from '@/customThemes'
-import CustomNodeContent from './CustomNodeContent.vue'
-import Color from './Color.vue'
-import Vue from 'vue'
-import router from '../../../router'
-import store from '../../../store'
-import i18n from '../../../i18n'
 import Search from './Search.vue'
 import NodeIconSidebar from './NodeIconSidebar.vue'
 import NodeIconToolbar from './NodeIconToolbar.vue'
@@ -207,7 +207,6 @@ export default {
   mounted() {
     showLoading()
     // this.showNewFeatureInfo()
-    this.getData()
     this.init()
     this.$bus.$on('execCommand', this.execCommand)
     this.$bus.$on('paddingChange', this.onPaddingChange)
@@ -270,11 +269,6 @@ export default {
       }
     },
 
-    //获取思维导图数据，实际应该调接口获取
-    getData() {
-      let storeData = getData()
-      this.mindMapData = storeData
-    },
 
     //存储数据当数据有变时
     bindSaveEvent() {
@@ -298,7 +292,10 @@ export default {
     },
 
     //初始化
-    init() {
+    async init() {
+      let data = await getData(this.$route.query.articleId);
+      this.mindMapData = data.content;
+      console.log(data,this.mindMapData)
       let hasFileURL = this.hasFileURL()
       let { root, layout, theme, view, config } = this.mindMapData
       // 如果url中存在要打开的文件，那么思维导图数据、主题、布局都使用默认的

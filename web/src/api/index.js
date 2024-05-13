@@ -1,6 +1,8 @@
 import exampleData from 'simple-mind-map/example/exampleData'
-import { simpleDeepClone } from 'simple-mind-map/src/utils/index'
+import { simpleDeepClone } from 'simple-mind-map/src/utils'
 import Vue from 'vue'
+import {getRequest,postJsonRequest} from "@/api/api";
+import store from "@/store";
 
 const SIMPLE_MIND_MAP_DATA = 'SIMPLE_MIND_MAP_DATA'
 const SIMPLE_MIND_MAP_LANG = 'SIMPLE_MIND_MAP_LANG'
@@ -23,77 +25,103 @@ const copyMindMapTreeData = (tree, root) => {
 }
 
 //获取缓存的思维导图数据
-export const getData = () => {
-  if (window.takeOverApp) {
-    mindMapData = window.takeOverAppMethods.getMindMapData()
-    return mindMapData
-  }
-  let store = localStorage.getItem(SIMPLE_MIND_MAP_DATA)
-  if (store === null) {
-    return simpleDeepClone(exampleData)
-  } else {
-    try {
-      return JSON.parse(store)
-    } catch (error) {
-      return simpleDeepClone(exampleData)
-    }
-  }
+export const getData = (articleId) => {
+  console.log("getData",articleId)
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      //默认数据
+      mindMapData = {
+        content: simpleDeepClone(exampleData),
+        contentId: null
+      }
+      getRequest('/blog/content/detail?articleId=' + articleId).then(res => {
+        let data = res.data
+        if (data.code === 200 && data.data.content) {
+          try {
+            mindMapData = data.data
+            mindMapData.content = JSON.parse(data.data.content)
+            store.commit('setArticleInfo', {
+              articleId: mindMapData.articleId,
+              title: mindMapData.title,
+              contentId: mindMapData.contentId,
+            })
+          } catch (error) {
+            resolve(mindMapData)
+          }
+        }
+        resolve(mindMapData)
+      })
+    }, 200)
+  })
 }
 
 //存储思维导图数据
 export const storeData = data => {
+  console.log("storeData")
+  mindMapData.content.root = copyMindMapTreeData({}, data)
+  storeDataThrottled()
+}
+
+export const saveData = () => {
+  console.log("saveData")
   try {
-    let originData = null
-    if (window.takeOverApp) {
-      originData = mindMapData
-    } else {
-      originData = getData()
+    let data = {
+      ...mindMapData,
+      ...store.state.articleInfo,
+      content: JSON.stringify(mindMapData.content)
     }
-    originData.root = copyMindMapTreeData({}, data)
-    if (window.takeOverApp) {
-      mindMapData = originData
-      window.takeOverAppMethods.saveMindMapData(originData)
-      return
-    }
-    Vue.prototype.$bus.$emit('write_local_file', originData)
-    let dataStr = JSON.stringify(originData)
+    postJsonRequest('/blog/content/save', data).then(res => {
+      if (res.data.code === 200 ) {
+        store.commit('setLastSaveTime', new Date().toLocaleString())
+      }else {
+        Vue.prototype.$message({type: 'error', message: '自动保存失败：'+res.data.message});
+      }
+    })
+    Vue.prototype.$bus.$emit('write_local_file', mindMapData)
+    let dataStr = JSON.stringify(mindMapData)
     localStorage.setItem(SIMPLE_MIND_MAP_DATA, dataStr)
   } catch (error) {
     console.log(error)
   }
 }
+
+//节流函数
+export const throttle=(fn, delay) => {
+  // 时间戳
+  let timeTwo = 0
+  // 定时器
+  let timeThree = null;
+  return function() {
+    let context = this;
+    let args = arguments;
+    let now = new Date()
+    let wait = delay - (now - timeTwo)
+    clearTimeout(timeThree)
+    if (wait <= 0) {
+      fn.apply(context, args);
+      timeTwo = new Date();
+    } else {
+      timeThree = setTimeout(function() {
+        fn.apply(context, args);
+      }, delay)
+    }
+  }
+}
+
+export const storeDataThrottled = throttle(saveData, 30000);
 
 //存储思维导图配置数据
 export const storeConfig = config => {
-  try {
-    let originData = null
-    if (window.takeOverApp) {
-      originData = mindMapData
-    } else {
-      originData = getData()
-    }
-    originData = {
-      ...originData,
-      ...config
-    }
-    if (window.takeOverApp) {
-      mindMapData = originData
-      window.takeOverAppMethods.saveMindMapData(originData)
-      return
-    }
-    Vue.prototype.$bus.$emit('write_local_file', originData)
-    let dataStr = JSON.stringify(originData)
-    localStorage.setItem(SIMPLE_MIND_MAP_DATA, dataStr)
-  } catch (error) {
-    console.log(error)
+  console.log("storeConfig")
+  mindMapData.content = {
+    ...mindMapData.content,
+    ...config
   }
+  storeDataThrottled()
 }
 
 /**
- * javascript comment
- * @Author: 王林
- * @Date: 2022-11-05 14:36:50
- * @Desc: 存储语言
+ * 存储语言
  */
 export const storeLang = lang => {
   if (window.takeOverApp) {
@@ -104,10 +132,7 @@ export const storeLang = lang => {
 }
 
 /**
- * javascript comment
- * @Author: 王林
- * @Date: 2022-11-05 14:37:36
- * @Desc: 获取存储的语言
+ * 获取存储的语言
  */
 export const getLang = () => {
   if (window.takeOverApp) {
@@ -122,10 +147,7 @@ export const getLang = () => {
 }
 
 /**
- * javascript comment
- * @Author: 王林25
- * @Date: 2022-11-14 18:57:31
- * @Desc: 存储本地配置
+ * 存储本地配置
  */
 export const storeLocalConfig = config => {
   if (window.takeOverApp) {
@@ -135,10 +157,7 @@ export const storeLocalConfig = config => {
 }
 
 /**
- * javascript comment
- * @Author: 王林25
- * @Date: 2022-11-14 18:57:37
- * @Desc: 获取本地配置
+ * 获取本地配置
  */
 export const getLocalConfig = () => {
   if (window.takeOverApp) {

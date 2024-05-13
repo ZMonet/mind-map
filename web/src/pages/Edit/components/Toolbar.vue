@@ -1,8 +1,13 @@
 <template>
   <div class="toolbarContainer" :class="{ isDark: isDark }">
     <div class="toolbar" ref="toolbarRef">
+      <div class="title">
+        <el-button class="backBtn" icon="el-icon-back" @click="backToList"/>
+        <el-input v-model="$store.state.articleInfo.title" @change="editTitle"></el-input>
+      </div>
       <!-- 节点操作 -->
       <div class="toolbarBlock">
+        <!-- 顶部操作栏 -->
         <ToolbarNodeBtnList :list="horizontalList"></ToolbarNodeBtnList>
         <!-- 更多 -->
         <el-popover
@@ -13,6 +18,7 @@
           v-if="showMoreBtn"
           :style="{ marginLeft: horizontalList.length > 0 ? '20px' : 0 }"
         >
+          <!-- 侧边操作栏 -->
           <ToolbarNodeBtnList
             dir="v"
             :list="verticalList"
@@ -117,6 +123,9 @@
           </div>
         </div>
       </div>
+      <div>
+        <span>最后保存时间: {{$store.state.lastSaveTime}}</span>
+      </div>
     </div>
     <NodeImage></NodeImage>
     <NodeHyperlink></NodeHyperlink>
@@ -139,15 +148,11 @@ import Import from './Import'
 import { mapState } from 'vuex'
 import { Notification } from 'element-ui'
 import exampleData from 'simple-mind-map/example/exampleData'
-import { getData } from '../../../api'
+import { getData } from '@/api'
 import ToolbarNodeBtnList from './ToolbarNodeBtnList.vue'
-import { throttle } from 'simple-mind-map/src/utils/index'
+import { throttle } from 'simple-mind-map/src/utils'
 
-/**
- * @Author: 王林
- * @Date: 2021-06-24 22:54:58
- * @Desc: 工具栏
- */
+//工具栏
 let fileHandle = null
 export default {
   name: 'Toolbar',
@@ -468,6 +473,21 @@ export default {
         }
         this.$message.warning(this.$t('toolbar.notSupportTip'))
       }
+    },
+
+    editTitle(title){
+      console.log("editTitle")
+      this.$store.commit('setArticleInfo',{title:title})
+    },
+
+    backToList(){
+      this.$confirm("最后保存时间为[" + this.$store.state.lastSaveTime + "]确定要离开吗？", "保存提示", {
+        confirmButtonText: "确认离开",
+        cancelButtonText: "取消",
+        type: 'warning'
+      }).then(() => {
+        this.$router.push('/')
+      }).catch(() => {})
     }
   }
 }
@@ -551,6 +571,16 @@ export default {
     font-weight: 400;
     color: rgba(26, 26, 26, 0.8);
     z-index: 2;
+
+    .title {
+      display: flex;
+      margin-right: 20px;
+      align-items: center;
+      justify-content: flex-start;
+      .backBtn {
+        margin-right: 10px;
+      }
+    }
 
     .toolbarBlock {
       display: flex;

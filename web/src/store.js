@@ -7,6 +7,12 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
+    articleInfo: {
+      articleId: null,
+      title: '',
+      contentId: null,
+    },
+    lastSaveTime: '',
     mindMapData: null, // 思维导图数据
     isHandleLocalFile: false, // 是否操作的是本地文件
     localConfig: {
@@ -30,6 +36,19 @@ const store = new Vuex.Store({
     extraTextOnExport: ''// 导出时底部添加的文字
   },
   mutations: {
+    // 设置文章id
+    setArticleInfo(state, data) {
+      state.articleInfo = {
+        ...state.articleInfo,
+        ...data
+      }
+      console.log(state.articleInfo)
+    },
+
+    setLastSaveTime(state, data) {
+      state.lastSaveTime = data
+    },
+
     // 设置思维导图数据
     setMindMapData(state, data) {
       state.mindMapData = data
