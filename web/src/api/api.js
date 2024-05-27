@@ -2,9 +2,11 @@ import axios from "axios";
 import qs from "qs";
 import Vue from "vue";
 import router from "../router";
+import Cookies from 'js-cookie'
 
 
-export const baseURL= 'http://localhost:8139';
+// export const baseURL= 'http://47.106.183.25:8139';
+export const baseURL= '/mindMap';
 
 export const postRequest = (url, params) => {
   return axios({
@@ -71,7 +73,7 @@ axios.interceptors.request.use(
     // }
     //非登录请求需携带token
     if (config.url.indexOf("/login") === -1) {
-      config.headers.Authorization = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxX3RydWVfemp4aWFuIiwiZXhwIjoxNzE1ODQzMDE2LCJpYXQiOjE3MTUyMzgyMTZ9.X-ZfDhZxKwv1AhTMx1r9f8XqOw1CZwQTT5NPQO-k4Xo";
+      config.headers.Authorization = "Bearer " + JSON.parse(Cookies.get("authorized-token")).accessToken;
     }
     return config;
   },

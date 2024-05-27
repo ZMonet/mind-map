@@ -29,17 +29,16 @@ export const getData = (articleId) => {
   console.log("getData",articleId)
   return new Promise((resolve) => {
     setTimeout(() => {
-      //默认数据
-      mindMapData = {
-        content: simpleDeepClone(exampleData),
-        contentId: null
-      }
       getRequest('/blog/content/detail?articleId=' + articleId).then(res => {
         let data = res.data
-        if (data.code === 200 && data.data.content) {
+        if (data.code === 200) {
+          mindMapData = data.data
           try {
-            mindMapData = data.data
-            mindMapData.content = JSON.parse(data.data.content)
+            if(mindMapData.content){
+              mindMapData.content = JSON.parse(mindMapData.content)
+            }else {
+              mindMapData.content = simpleDeepClone(exampleData)
+            }
             store.commit('setArticleInfo', {
               articleId: mindMapData.articleId,
               title: mindMapData.title,
@@ -72,6 +71,10 @@ export const saveData = () => {
     }
     postJsonRequest('/blog/content/save', data).then(res => {
       if (res.data.code === 200 ) {
+        //新建第一次保存要刷新下数据
+        if(!store.state.articleInfo.contentId){
+          getData(store.state.articleInfo.articleId).then(() => {})
+        }
         store.commit('setLastSaveTime', new Date().toLocaleString())
       }else {
         Vue.prototype.$message({type: 'error', message: '自动保存失败：'+res.data.message});
