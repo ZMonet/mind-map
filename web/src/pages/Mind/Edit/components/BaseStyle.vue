@@ -938,8 +938,8 @@
 </template>
 
 <script>
-import Sidebar from './Sidebar'
-import Color from './Color'
+import Sidebar from './Sidebar.vue'
+import Color from './Color.vue'
 import {
   lineWidthList,
   lineStyleList,
@@ -951,7 +951,7 @@ import {
   rootLineKeepSameInCurveList,
   lineStyleMap
 } from '@/config'
-import ImgUpload from '@/components/ImgUpload'
+import ImgUpload from '@/components/ImgUpload/index.vue'
 import { storeConfig } from '@/api'
 import { mapState, mapMutations } from 'vuex'
 import {

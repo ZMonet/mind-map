@@ -43,7 +43,7 @@
 import {
   generateColorByContent,
   isMobile
-} from 'simple-mind-map/src/utils/index'
+} from 'simple-mind-map/src/utils'
 
 //节点标签内容设置
 export default {

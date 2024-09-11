@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import Sidebar from './Sidebar'
+import Sidebar from './Sidebar.vue'
 import { mapState, mapMutations } from 'vuex'
 import { formulaList } from '@/config/constant'
 import 'katex/dist/katex.min.css'

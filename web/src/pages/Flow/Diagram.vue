@@ -36,6 +36,11 @@ import DiagramToolbar from './DiagramToolbar.vue'
 import DiagramSidebar from './DiagramSidebar.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import { registerCustomElement } from './node'
+import store from "@/store";
+import {getRequest} from "@/api/api";
+import {simpleDeepClone} from "simple-mind-map/src/utils";
+import exampleData from "simple-mind-map/example/exampleData";
+
 
 export default {
   name: 'Diagram',
@@ -51,7 +56,7 @@ export default {
       properties: {}
     }
   },
-  mounted () {
+  async mounted () {
     let data = ''
     if (window.location.search) {
       const query = window.location.search.substring(1).split('&').reduce((map, kv) => {
@@ -65,6 +70,9 @@ export default {
         data = JSON.parse(d)
       }
     }
+
+    data = await this.loadFlowData()
+    console.log("flow",data)
     this.initLogicFlow(data)
   },
   methods: {
@@ -111,6 +119,22 @@ export default {
           this.activeNodes = nodes
           this.activeEdges = edges
           this.$_getProperty()
+        })
+      })
+    },
+
+    loadFlowData(){
+      return new Promise((resolve) => {
+        getRequest('/blog/content/detail?articleId=' + store.state.articleInfo.articleId).then(res => {
+          let data = res.data
+          if (data.code === 200 && data.data.contentId) {
+            store.commit('setArticleInfo', {
+              contentId: data.data.contentId,
+            })
+            resolve(data.data.content)
+          }else {
+            resolve('')
+          }
         })
       })
     },

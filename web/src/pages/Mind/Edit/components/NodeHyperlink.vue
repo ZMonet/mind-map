@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { isMobile } from 'simple-mind-map/src/utils/index'
+import { isMobile } from 'simple-mind-map/src/utils'
 
 //节点超链接内容设置
 export default {

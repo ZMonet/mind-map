@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import Sidebar from './Sidebar'
+import Sidebar from './Sidebar.vue'
 import { layoutList } from 'simple-mind-map/src/constants/constant'
 import { storeConfig } from '@/api'
 import { mapState } from 'vuex'

@@ -109,8 +109,8 @@
 </template>
 
 <script>
-import Scale from './Scale'
-import Fullscreen from './Fullscreen'
+import Scale from './Scale.vue'
+import Fullscreen from './Fullscreen.vue'
 import MouseAction from './MouseAction.vue'
 import { langList } from '@/config'
 import i18n from '@/i18n'

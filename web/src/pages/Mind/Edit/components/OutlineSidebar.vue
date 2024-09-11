@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Sidebar from './Sidebar'
+import Sidebar from './Sidebar.vue'
 import { mapState, mapMutations } from 'vuex'
 import Outline from './Outline.vue'
 

@@ -37,8 +37,8 @@
 </template>
 
 <script>
-import ImgUpload from '@/components/ImgUpload'
-import { getImageSize, isMobile } from 'simple-mind-map/src/utils/index'
+import ImgUpload from '@/components/ImgUpload/index.vue'
+import { getImageSize, isMobile } from 'simple-mind-map/src/utils'
 
 //节点图片内容设置
 export default {

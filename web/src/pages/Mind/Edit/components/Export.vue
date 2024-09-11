@@ -97,7 +97,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { downTypeList } from '@/config'
-import { isMobile } from 'simple-mind-map/src/utils/index'
+import { isMobile } from 'simple-mind-map/src/utils'
 
 //导出
 export default {

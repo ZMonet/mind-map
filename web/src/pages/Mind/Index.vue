@@ -54,6 +54,11 @@
             <el-option v-for="item in typeList" :key="item.code" :label="item.name" :value="item.code" />
           </el-select>
         </el-form-item>
+        <el-form-item label="文章类型">
+          <el-select v-model="form.type" placeholder="Select">
+            <el-option v-for="item in articleTypeList" :key="item.code" :label="item.name" :value="item.code" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="标题">
           <el-input v-model="form.title" clearable />
         </el-form-item>
@@ -68,7 +73,6 @@
 
 <script>
 import {getRequest,postJsonRequest,deleteRequest} from "@/api/api";
-import {mapState} from "vuex";
 
 export default {
   name: "MindIndex",
@@ -81,12 +85,14 @@ export default {
         articleList: []
       },
       typeList: [],
+      articleTypeList: [],
       activeProject: '',
       keyword: '',
       dialogVisible: false,
       form: {
         title: '',
-        projectId: ''
+        projectId: '',
+        type: ''
       },
 
     }
@@ -97,10 +103,11 @@ export default {
 
   methods: {
     loadType() {
-      getRequest('/dict-value/findByCode',{codes:"bugType"}).then(res=>{
+      getRequest('/dict-value/findByCode',{codes:"bugType,articleType"}).then(res=>{
         res=res.data;
         if(res.code===200){
           this.typeList = res.data.bugType
+          this.articleTypeList = res.data.articleType
           this.activeProject = this.typeList[0].code
         }
         this.loadArticles();
@@ -131,7 +138,13 @@ export default {
     },
     handleEdit(item) {
       this.$store.commit('setArticleInfo', {articleId: item.id, title: item.title})
-      this.$router.push({name: 'MindMapEdit', query: {articleId: item.id}})
+      if(item.type=== 3){
+        this.$router.push({name: 'MindMapEdit', query: {articleId: item.id}})
+      }else if(item.type=== 4){
+        this.$router.push({name: 'MindMapEdit', query: {articleId: item.id}})
+      }else{
+        this.$message({type: 'info', message: '暂不支持打开此类型的文章!'});
+      }
     },
     handleDelete(id) {
       deleteRequest("/article?id="+id).then(res=>{
@@ -149,16 +162,11 @@ export default {
       this.dialogVisible = false
     },
     submitData() {
-      if (!this.form.title || !this.form.projectId) {
+      if (!this.form.title || !this.form.projectId || !this.form.type) {
         this.$message({type: 'info', message: '请选择项目并填写标题!'})
         return;
       }
-      //type=3表示是思维导图数据
-      let formData = {
-        ...this.form,
-        type: 3
-      }
-      postJsonRequest('/article/add', formData).then(res => {
+      postJsonRequest('/article/add', this.form).then(res => {
         if (res.data.code === 200) {
           this.$message({type: 'success', message: '添加成功!'});
         }

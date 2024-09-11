@@ -7,12 +7,12 @@ const routes = [
   {
     path: '/index', 
     name: 'Index', 
-    component: () => import(`./pages/flow/Diagram.vue`)
+    component: () => import(`./pages/Flow/Diagram.vue`)
   },
   { 
     path: '/mindMap/edit',
     name: 'MindMapEdit',
-    component: () => import(`./pages/Edit/Index.vue`) 
+    component: () => import(`./pages/Mind/Edit/Index.vue`)
   },
   {
     path: '/',

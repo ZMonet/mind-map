@@ -62,7 +62,7 @@ import { storeData } from '@/api'
 import CodeMirror from 'codemirror'
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/lib/codemirror.css'
-import { copy } from '@/utils/index'
+import { copy } from '@/utils'
 
 let editor = null
 

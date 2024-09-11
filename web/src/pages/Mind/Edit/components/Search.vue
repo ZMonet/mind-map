@@ -56,7 +56,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { isUndef } from 'simple-mind-map/src/utils/index'
+import { isUndef } from 'simple-mind-map/src/utils'
 
 // 搜索替换
 export default {

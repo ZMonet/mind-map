@@ -138,13 +138,13 @@
 </template>
 
 <script>
-import NodeImage from './NodeImage'
-import NodeHyperlink from './NodeHyperlink'
-import NodeIcon from './NodeIcon'
-import NodeNote from './NodeNote'
-import NodeTag from './NodeTag'
-import Export from './Export'
-import Import from './Import'
+import NodeImage from './NodeImage.vue'
+import NodeHyperlink from './NodeHyperlink.vue'
+import NodeIcon from './NodeIcon.vue'
+import NodeNote from './NodeNote.vue'
+import NodeTag from './NodeTag.vue'
+import Export from './Export.vue'
+import Import from './Import.vue'
 import { mapState } from 'vuex'
 import { Notification } from 'element-ui'
 import exampleData from 'simple-mind-map/example/exampleData'

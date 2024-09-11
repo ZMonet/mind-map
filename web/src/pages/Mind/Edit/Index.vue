@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import Toolbar from './components/Toolbar'
-import Edit from './components/Edit'
+import Toolbar from './components/Toolbar.vue'
+import Edit from './components/Edit.vue'
 import { mapState, mapActions, mapMutations } from 'vuex'
 import { getLocalConfig } from '@/api'
 
