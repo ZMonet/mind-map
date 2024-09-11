@@ -36,10 +36,7 @@ import DiagramToolbar from './DiagramToolbar.vue'
 import DiagramSidebar from './DiagramSidebar.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import { registerCustomElement } from './node'
-import store from "@/store";
-import {getRequest} from "@/api/api";
-import {simpleDeepClone} from "simple-mind-map/src/utils";
-import exampleData from "simple-mind-map/example/exampleData";
+import {getRequest, postJsonRequest} from "@/api/api";
 
 
 export default {
@@ -71,8 +68,7 @@ export default {
       }
     }
 
-    data = await this.loadFlowData()
-    console.log("flow",data)
+    data = await this.loadFlowData(this.$route.query.articleId)
     this.initLogicFlow(data)
   },
   methods: {
@@ -123,17 +119,20 @@ export default {
       })
     },
 
-    loadFlowData(){
+    loadFlowData(articleId){
       return new Promise((resolve) => {
-        getRequest('/blog/content/detail?articleId=' + store.state.articleInfo.articleId).then(res => {
+        getRequest('/blog/content/detail?articleId=' + articleId).then(res => {
           let data = res.data
-          if (data.code === 200 && data.data.contentId) {
-            store.commit('setArticleInfo', {
-              contentId: data.data.contentId,
+          if (data.code === 200) {
+            this.$store.commit('setArticleInfo', {
+              articleId: data.data.articleId,
+              title: data.data.title,
+              contentId: data.data.contentId
             })
-            resolve(data.data.content)
+            let content_data = data.data.content ? JSON.parse(data.data.content) : {}
+            resolve(content_data)
           }else {
-            resolve('')
+            resolve({})
           }
         })
       })
@@ -181,10 +180,27 @@ export default {
         this.lf.setElementZIndex(id, type)
       })
     },
+
     $_saveGraph () {
-      const data = this.lf.getGraphData()
-      this.download(this.filename, JSON.stringify(data))
+      const data = {
+        ...this.$store.state.articleInfo,
+        content: JSON.stringify(this.lf.getGraphData())
+      }
+      postJsonRequest('/blog/content/save', data).then(res => {
+        if (res.data.code === 200 ) {
+          //新建第一次保存要刷新下contentId
+          if(!this.$store.state.articleInfo.contentId){
+            this.$store.commit('setArticleInfo', {
+              contentId: res.data.data,
+            })
+          }
+          this.$message({type: 'success', message: '保存成功'});
+        }else {
+          this.$message({type: 'error', message: '保存失败：'+res.data.message});
+        }
+      })
     },
+
     download (filename, text) {
       window.sessionStorage.setItem(filename, text)
       const element = document.createElement('a')

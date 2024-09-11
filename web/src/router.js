@@ -5,9 +5,9 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/index', 
-    name: 'Index', 
-    component: () => import(`./pages/Flow/Diagram.vue`)
+    path: '/flow/edit',
+    name: 'FlowEdit',
+    component: () => import(`./pages/Flow/Index.vue`)
   },
   { 
     path: '/mindMap/edit',

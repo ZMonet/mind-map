@@ -141,7 +141,7 @@ export default {
       if(item.type=== 3){
         this.$router.push({name: 'MindMapEdit', query: {articleId: item.id}})
       }else if(item.type=== 4){
-        this.$router.push({name: 'MindMapEdit', query: {articleId: item.id}})
+        this.$router.push({name: 'FlowEdit', query: {articleId: item.id}})
       }else{
         this.$message({type: 'info', message: '暂不支持打开此类型的文章!'});
       }

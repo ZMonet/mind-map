@@ -2,13 +2,13 @@
   <div class="diagram-toolbar-container">
     <div class="diagram-toolbar">
       <div>
-        <button class="toolbar-item" :class="{'disabled': !redoAble}" @click="$_saveGraph">返回</button>
+        <button class="toolbar-item" :class="{'disabled': !redoAble}" @click="$router.push('/')">返回</button>
       </div>
       <div>
         <button class="toolbar-item" :class="{'disabled': !redoAble}" @click="$_saveGraph">保存</button>
       </div>
       <div>
-        <el-input v-model="linetype"  @keydown.native.stop></el-input>
+        <el-input v-model="$store.state.articleInfo.title" @change="editTitle"></el-input>
       </div>
     </div>
     <div class="diagram-toolbar">
@@ -63,10 +63,10 @@
     </div>
     <div class="diagram-toolbar">
       <div>
-        <button class="toolbar-item" :class="{'disabled': !redoAble}" @click="$_saveGraph">导入</button>
+        <button class="toolbar-item" :class="{'disabled': !redoAble}" disabled>导入</button>
       </div>
       <div>
-        <button class="toolbar-item" :class="{'disabled': !redoAble}" @click="$_saveGraph">导出</button>
+        <button class="toolbar-item" :class="{'disabled': !redoAble}" disabled>导出</button>
       </div>
     </div>
   </div>
@@ -163,7 +163,10 @@ export default {
           graphModel.changeEdgeType(edge.id, value)
         })
       }
-    }
+    },
+    editTitle(title){
+      this.$store.commit('setArticleInfo',{title:title})
+    },
   },
   components: {
     // ColorFill,

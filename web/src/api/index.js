@@ -71,9 +71,11 @@ export const saveData = () => {
     }
     postJsonRequest('/blog/content/save', data).then(res => {
       if (res.data.code === 200 ) {
-        //新建第一次保存要刷新下数据
+        //新建第一次保存要刷新下contentId
         if(!store.state.articleInfo.contentId){
-          getData(store.state.articleInfo.articleId).then(() => {})
+          store.commit('setArticleInfo', {
+            contentId: data.data,
+          })
         }
         store.commit('setLastSaveTime', new Date().toLocaleString())
       }else {
