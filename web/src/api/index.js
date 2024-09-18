@@ -74,7 +74,7 @@ export const saveData = () => {
         //新建第一次保存要刷新下contentId
         if(!store.state.articleInfo.contentId){
           store.commit('setArticleInfo', {
-            contentId: data.data,
+            contentId: res.data.data,
           })
         }
         store.commit('setLastSaveTime', new Date().toLocaleString())
