@@ -29,7 +29,7 @@
 
 <script>
 import LogicFlow from '@logicflow/core'
-import { SelectionSelect, Menu, MiniMap } from '@logicflow/extension'
+import { SelectionSelect, Menu, MiniMap, Snapshot, InsertNodeInPolyline  } from '@logicflow/extension'
 import '@logicflow/core/lib/style/index.css'
 import '@logicflow/extension/lib/style/index.css'
 import DiagramToolbar from './DiagramToolbar.vue'
@@ -77,13 +77,28 @@ export default {
       LogicFlow.use(SelectionSelect)
       LogicFlow.use(Menu)
       LogicFlow.use(MiniMap)
+      LogicFlow.use(Snapshot)
+      //拖动图形到两个图形连接线上时，该图形自动变成两个图形的中间节点
+      LogicFlow.use(InsertNodeInPolyline)
       const lf = new LogicFlow({
         container: this.$refs.diagram,
         overlapMode: 1,
         autoWrap: true,
         metaKeyMultipleSelected: true,
         keyboard: {
-          enabled: true
+          enabled: true,
+          shortcuts: [
+            {
+              // 自定义删除快捷键，默认的删除快捷键为 backspace
+              keys: ["delete"],
+              callback: () => {
+                const elements = lf.getSelectElements(true);
+                lf.clearSelectElements();
+                elements.edges.forEach((edge) => lf.deleteEdge(edge.id));
+                elements.nodes.forEach((node) => lf.deleteNode(node.id));
+              },
+            },
+          ],
         },
         grid: {
           visible: false,
@@ -105,7 +120,6 @@ export default {
       // 注册自定义元素
       registerCustomElement(lf)
       lf.setDefaultEdgeType('pro-polyline')
-      lf.extension.miniMap.show()
       lf.render(data)
       this.lf = lf
       this.lf.on('selection:selected,node:click,blank:click,edge:click', () => {
