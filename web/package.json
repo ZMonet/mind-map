@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build && node ../copy.js",
+    "build": "vue-cli-service build && node ../copy.js",
     "lint": "vue-cli-service lint",
     "buildLibrary": "node ./scripts/updateVersion.js && vue-cli-service build --mode library --target lib --name simpleMindMap ../simple-mind-map/full.js --dest ../simple-mind-map/dist && esbuild ../simple-mind-map/full.js --bundle --external:buffer --format=esm --outfile=../simple-mind-map/dist/simpleMindMap.esm.js && esbuild ../simple-mind-map/full.js --bundle --minify --external:buffer --format=esm --outfile=../simple-mind-map/dist/simpleMindMap.esm.min.js",
     "format": "prettier --write src/* src/*/* src/*/*/* src/*/*/*/*",
@@ -13,6 +13,8 @@
     "createNodeImageList": "node ./scripts/createNodeImageList.js"
   },
   "dependencies": {
+    "@logicflow/core": "^2.0.3",
+    "@logicflow/extension": "^2.0.6",
     "@toast-ui/editor": "^3.1.5",
     "axios": "^1.6.8",
     "codemirror": "^5.65.16",
@@ -24,6 +26,7 @@
     "qs": "^6.12.1",
     "v-viewer": "^1.6.4",
     "vue": "^2.6.11",
+    "vue-color": "^2.8.1",
     "vue-i18n": "^8.27.2",
     "vue-router": "^3.5.1",
     "vuex": "^3.6.2",
