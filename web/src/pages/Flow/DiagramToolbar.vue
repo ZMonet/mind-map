@@ -63,10 +63,10 @@
     </div>
     <div class="diagram-toolbar">
       <div>
-        <button class="toolbar-item" :class="{'disabled': !redoAble}" disabled>导入</button>
+        <button class="toolbar-item">导入</button>
       </div>
       <div>
-        <button class="toolbar-item" :class="{'disabled': !redoAble}" disabled>导出</button>
+        <button class="toolbar-item" @click="$_exportGraph()">导出</button>
       </div>
     </div>
   </div>
@@ -163,6 +163,18 @@ export default {
           graphModel.changeEdgeType(edge.id, value)
         })
       }
+    },
+    $_exportGraph () {
+      const exportOptions = {
+        // fileType: 'png', //导出图片的格式，可选值为：png、webp、jpeg、svg，默认值为 png
+        // width: 200,  //导出图片的宽度，通常无需设置，设置后可能会拉伸图形
+        // height: 200,  //导出图片的宽度，通常无需设置，设置后可能会拉伸图形
+        backgroundColor: '#fff',   //导出图片的背景色，默认为透明
+        // quality: 0.92, //导出图片的质量。在指定图片格式为 jpeg 或 webp 的情况下，可以从 0 到 1 的区间内选择图片的质量，如果超出取值范围，将会使用默认值 0.92
+        // padding: 40, //导出图片的内边距，即元素内容所在区域边界与图片边界的距离，单位为像素，默认为 40
+        // partial: false //导出图片时是否开启局部渲染，false：将导出画布上所有的元素，true：只导出画面区域内的可见元素
+      }
+      this.$props.lf.getSnapshot(this.$store.state.articleInfo.title, exportOptions);
     },
     editTitle(title){
       this.$store.commit('setArticleInfo',{title:title})
