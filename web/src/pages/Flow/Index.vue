@@ -125,7 +125,32 @@ export default {
                 elements.edges.forEach((edge) => lf.deleteEdge(edge.id));
                 elements.nodes.forEach((node) => lf.deleteNode(node.id));
               },
-            },
+            },{
+              // 自定义移动快捷键
+              keys: ["up"],
+              callback: () => {
+                const elements = lf.getSelectElements(true);
+                lf.graphModel.moveNodes(elements.nodes.map(i=>i.id), 0, -1, true);
+              },
+            },{
+              keys: ["down"],
+              callback: () => {
+                const elements = lf.getSelectElements(true);
+                lf.graphModel.moveNodes(elements.nodes.map(i=>i.id), 0, 1, true);
+              },
+            },{
+              keys: ["left"],
+              callback: () => {
+                const elements = lf.getSelectElements(true);
+                lf.graphModel.moveNodes(elements.nodes.map(i=>i.id), -1, 0, true);
+              },
+            },{
+              keys: ["right"],
+              callback: () => {
+                const elements = lf.getSelectElements(true);
+                lf.graphModel.moveNodes(elements.nodes.map(i=>i.id), 1, 0, true);
+              },
+            }
           ],
         },
         grid: {
