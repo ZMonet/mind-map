@@ -80,10 +80,38 @@ export default {
       LogicFlow.use(Snapshot)
       //拖动图形到两个图形连接线上时，该图形自动变成两个图形的中间节点
       LogicFlow.use(InsertNodeInPolyline)
-      const lf = new LogicFlow({
-        container: this.$refs.diagram,
-        overlapMode: 1,
+
+      // 浏览模式
+      // const SilentConfig = {
+      //   stopZoomGraph: false,
+      //   stopScrollGraph: false,
+      //   stopMoveGraph: false,
+      //   adjustEdge: false,
+      //   adjustEdgeStartAndEnd: false,
+      //   adjustNodePosition: false,
+      //   hideAnchors: true,
+      //   nodeSelectedOutline: true,
+      //   nodeTextEdit: false,
+      //   edgeTextEdit: false,
+      //   nodeTextDraggable: false,
+      //   edgeTextDraggable: false,
+      // };
+
+      //编辑模式
+      const editConfig = {
+        //元素重合时堆叠模式
+        //值为0: 默认模式，节点和边被选中，会被显示在最上面。当取消选中后，元素会恢复之前的层级。
+        //值为1: 递增模式，节点和边被选中，会被显示在最上面。当取消选中后，元素会保持层级。
+        // overlapMode: 1,
+        //文字自动换行
         autoWrap: true,
+        //TODO:连接线文字可拖拽,加了配置但不生效
+        edgeTextDraggable: true,
+        //节点缩放和旋转
+        allowResize: true,
+        allowRotate: true,
+        //局部渲染
+        partial: true,
         metaKeyMultipleSelected: true,
         keyboard: {
           enabled: true,
@@ -108,15 +136,19 @@ export default {
           backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDBkMGQwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=")',
           backgroundRepeat: 'repeat'
         }
+      };
+
+      const lf = new LogicFlow({
+        container: this.$refs.diagram,
+        ...editConfig
       })
-      lf.setTheme(
-        {
+
+      lf.setTheme({
           baseEdge: { strokeWidth: 1 },
           baseNode: { strokeWidth: 1 },
           nodeText: { overflowMode: 'autoWrap', lineHeight: 1.5 },
           edgeText: { overflowMode: 'autoWrap', lineHeight: 1.5 }
-        }
-      )
+        })
       // 注册自定义元素
       registerCustomElement(lf)
       lf.setDefaultEdgeType('pro-polyline')
