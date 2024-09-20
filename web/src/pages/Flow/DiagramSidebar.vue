@@ -81,6 +81,9 @@
         <div class="node-item" @mousedown="dragInNode('divide')">
           <icon-divide class="svg-node" />
         </div>
+        <div class="node-item" @mousedown="dragInNode('left-brace')">
+          <span class="icon iconfont icondakuohaozuo svg-node dakuohao"></span>
+        </div>
       </div>
     </div>
     <div>
@@ -194,6 +197,12 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
+.svg-node.dakuohao {
+  font-size: 26px;
+  font-weight: bold;
+}
+
 .image-node, .icon-node {
   display: inline-block;
   width: 30px;

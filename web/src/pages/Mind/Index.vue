@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <el-row justify="start">
-        <el-select v-model="activeProject" placeholder="Select" @change="loadArticles">
+        <el-select v-model="activeProject" placeholder="全部" @change="loadArticles">
           <el-option v-for="item in typeList" :key="item.code" :label="item.name" :value="item.code" />
         </el-select>
         <el-input v-model="keyword" @keyup.enter.native="loadArticles" style="width: 50%;margin-left: 30px;margin-right: 10px" />
@@ -108,7 +108,6 @@ export default {
         if(res.code===200){
           this.typeList = res.data.bugType
           this.articleTypeList = res.data.articleType
-          this.activeProject = this.typeList[0].code
         }
         this.loadArticles();
       }).catch(()=>{

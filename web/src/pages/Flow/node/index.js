@@ -37,9 +37,11 @@ import IconMessage from './icon/Message'
 import Ployline from './edge/Polyline'
 import Line from './edge/Line'
 import Bezier from './edge/Bezier'
+import LeftBrace from "@/pages/Flow/node/path/LeftBrace";
 
 export const registerCustomElement = (lf) => {
   // 注册基础图形
+  lf.register(LeftBrace)
   lf.register(CircleNode)
   lf.register(RectNode)
   lf.register(RectRadiusNode)
