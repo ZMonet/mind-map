@@ -38,9 +38,13 @@ import Ployline from './edge/Polyline'
 import Line from './edge/Line'
 import Bezier from './edge/Bezier'
 import LeftBrace from "@/pages/Flow/node/path/LeftBrace";
+import FillRightArrow from "@/pages/Flow/node/line/FillRightArrow";
+import LineRightArrow from "@/pages/Flow/node/line/LineRightArrow";
 
 export const registerCustomElement = (lf) => {
   // 注册基础图形
+  lf.register(LineRightArrow)
+  lf.register(FillRightArrow)
   lf.register(LeftBrace)
   lf.register(CircleNode)
   lf.register(RectNode)

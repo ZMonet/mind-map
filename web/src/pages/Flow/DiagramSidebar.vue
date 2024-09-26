@@ -84,6 +84,12 @@
         <div class="node-item" @mousedown="dragInNode('left-brace')">
           <span class="icon iconfont icondakuohaozuo svg-node dakuohao"></span>
         </div>
+        <div class="node-item" @mousedown="dragInNode('fill-right-arrow')">
+          <span class="icon iconfont iconfill-arrow-right svg-node dakuohao"></span>
+        </div>
+        <div class="node-item" @mousedown="dragInNode('line-right-arrow')">
+          <span class="icon iconfont iconarrow-right svg-node dakuohao"></span>
+        </div>
       </div>
     </div>
     <div>
