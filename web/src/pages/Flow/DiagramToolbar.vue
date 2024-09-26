@@ -2,10 +2,14 @@
   <div class="diagram-toolbar-container">
     <div class="diagram-toolbar">
       <div>
-        <button class="toolbar-item" :class="{'disabled': !redoAble}" @click="$router.push('/')">返回</button>
+        <el-tooltip effect="dark" content="返回" placement="top-start">
+          <i class="toolbar-item icon iconfont iconfanhui" :class="{'disabled': !redoAble}" @click="$router.push('/')"/>
+        </el-tooltip>
       </div>
       <div>
-        <button class="toolbar-item" :class="{'disabled': !redoAble}" @click="$_saveGraph">保存</button>
+        <el-tooltip effect="dark" content="保存" placement="top-start">
+          <i class="toolbar-item icon iconfont iconbaocun" :class="{'disabled': !redoAble}" @click="$_saveGraph"/>
+        </el-tooltip>
       </div>
       <div>
         <el-input v-model="$store.state.articleInfo.title" @change="editTitle"></el-input>
@@ -13,7 +17,9 @@
     </div>
     <div class="diagram-toolbar">
       <div class="toolbar-item" :class="{'selection-active': selectionOpened}" @click="$_selectionSelect()">
-        <area-select size="18" />
+        <el-tooltip effect="dark" content="框选" placement="top-start">
+          <i class="icon iconfont iconkuangxuan" />
+        </el-tooltip>
       </div>
       <!-- <div class="toolbar-item toolbar-color-picker">
         <el-popover
@@ -39,18 +45,26 @@
         <icon-line size="18" />
       </div> -->
       <div class="toolbar-item" @click="$_zoomIn()">
-        <zoom-in size="18" />
+        <el-tooltip effect="dark" content="放大" placement="top-start">
+          <i class="icon iconfont iconfangda" />
+        </el-tooltip>
       </div>
       <div class="toolbar-item" @click="$_zoomOut()">
-        <zoom-out size="18" />
+        <el-tooltip effect="dark" content="缩小" placement="top-start">
+          <i class="icon iconfont iconsuoxiao" />
+        </el-tooltip>
       </div>
       <div class="toolbar-item" :class="{'disabled': !undoAble}" @click="$_undo()">
-        <i class="el-icon-back"></i>
+        <el-tooltip effect="dark" content="撤销" placement="top-start">
+          <i class="icon iconfont iconhoutui-shi"></i>
+        </el-tooltip>
       </div>
       <div class="toolbar-item" :class="{'disabled': !redoAble}" @click="$_redo()">
-        <i class="el-icon-right"></i>
+        <el-tooltip effect="dark" content="重做" placement="top-start">
+          <i class="icon iconfont iconqianjin1"></i>
+        </el-tooltip>
       </div>
-      <div>
+      <div class="toolbar-item-select">
         <el-select v-model="linetype" size="mini" @change="$_changeLineType">
           <el-option
               v-for="item in lineOptions"
@@ -62,28 +76,22 @@
       </div>
     </div>
     <div class="diagram-toolbar">
-      <div>
-        <button class="toolbar-item">导入</button>
+      <div class="toolbar-item">
+        <el-tooltip effect="dark" content="导入" placement="top-start">
+          <i class="icon iconfont icondaoru"/>
+        </el-tooltip>
       </div>
-      <div>
-        <button class="toolbar-item" @click="$_exportGraph()">导出</button>
+      <div class="toolbar-item">
+        <el-tooltip effect="dark" content="导出" placement="top-start">
+          <i class="icon iconfont icondaochu" @click="$_exportGraph()"/>
+        </el-tooltip>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import { Sketch } from 'vue-color'
-// import ColorFill from './icon/ColorFill.vue'
-// import ColorText from './icon/ColorText.vue'
-// import IconFont from './icon/Font.vue'
-// import IconBlod from './icon/Blod.vue'
-// import IconLine from './icon/Line.vue'
-import ZoomIn from './icon/ZoomIn.vue'
-import ZoomOut from './icon/ZoomOut.vue'
-import StepBack from './icon/StepBack.vue'
-import StepFoward from './icon/StepFoward.vue'
-import AreaSelect from './icon/AreaSelect.vue'
+
 
 export default {
   props: {
@@ -179,19 +187,6 @@ export default {
     editTitle(title){
       this.$store.commit('setArticleInfo',{title:title})
     },
-  },
-  components: {
-    // ColorFill,
-    // ColorText,
-    // IconFont,
-    // IconBlod,
-    // IconLine,
-    ZoomIn,
-    ZoomOut,
-    StepBack,
-    StepFoward,
-    AreaSelect,
-    // SketchPicker: Sketch
   }
 }
 </script>
@@ -235,6 +230,15 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.toolbar-item-select {
+  width: 80px; /* 按钮的宽度 */
+  height: 35px; /* 按钮的高度 */
+  text-align: center;
+  display: flex;
+  align-items: center;
+  margin: 12px 10px;
 }
 
 
