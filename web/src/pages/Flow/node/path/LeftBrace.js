@@ -18,13 +18,13 @@ class BraceNode extends RectNode.view {
 
     // 动态计算大括号的路径
     const bracePath = `
-      M ${x + width / 3} ${y - height / 3}
-      A ${width / 4} ${width / 4} 0 0 0 ${x + width / 12} ${y - height / 3 + width / 4}
-      L ${x + width / 12} ${y - height / 12 + width / 4}
-      L ${x - width / 12} ${y - height / 12 + (width / 12) * 5}
-      L ${x + width / 12} ${y - height / 12 + (width / 12) * 7}
-      L ${x + width / 12} ${y + height / 6 + (width / 12) * 7}
-      A ${width / 4} ${width / 4} 0 0 0 ${x + width / 3} ${y + height / 6 + (width / 6) * 5}
+      M ${x + width / 2} ${y - height / 2}
+      A ${width / 4} ${width / 4} 0 0 0 ${x + width / 4} ${y - height / 2 + width / 4}
+      V ${y - height / 12 + width / 4}
+      L ${x + width / 6} ${y - height / 12 + width / 3}
+      L ${x + width / 4} ${y - height / 12 + (width / 12) * 5}
+      V ${y + height / 3 + (width / 12) * 5}
+      A ${width / 4} ${width / 4} 0 0 0 ${x + width / 2} ${y + height / 3 + (width / 3) * 2}
     `;
 
     const braceAttrs = {
